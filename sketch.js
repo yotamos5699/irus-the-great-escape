@@ -19,6 +19,7 @@ let trains = [];
 let imageNum = 0
 let bgsound
 gameOn = true
+touchOn = false
 
 function preload() {
 
@@ -43,12 +44,17 @@ function preload() {
 }
 
 function mousePressed() {
-  trains.push(new Train());
+  // trains.push(new Train());
+  if (!touchOn) {
+    touchOn = true
+    bgsound = loadSound("./iruss.mp3", playSound)
+    touchOn = true
+  }
 }
 
 function setup() {
-  createCanvas(800, 450);
-  bgsound = loadSound("iruss.mp3", playSound)
+   createCanvas(800, 450);
+  //createCanvas(windowWidth, windowHeight)
   //bgsound.set
   unicorn = new Unicorn();
   //soundClassifier.classify(gotCommand);
@@ -80,23 +86,39 @@ function keyPressed() {
   if (key == ' ') {
     unicorn.jump();
   }
+  if (!touchOn) {
+    bgsound = loadSound("./iruss.mp3", playSound)
+    touchOn = true
+  }
 }
 
 
 function touchStarted() {
-  unicorn.jump();
 
+  if (touchOn) {
+    unicorn.jump();
+  } else {
+    bgsound = loadSound("./iruss.mp3", playSound)
+    touchOn = true
+  }
 }
 
 
 function draw() {
-  if (gameOn) {
-    gameLoop()
-  } else {
-    image(looseBg, 0, 0, width, height)
-    noLoop();
-    console.log(gameOn)
+  if (touchOn) {
+    if (gameOn) {
+      gameLoop()
+    } else {
+      image(looseBg, 0, 0, width, height)
+      noLoop();
+      console.log(gameOn)
 
+    }
+  } else {
+    fill(255, 0, 255)
+    stroke(5)
+    textSize(60)
+    text(" לחץ להתחיל ", width / 2, height / 2)
   }
 }
 
@@ -104,11 +126,11 @@ function setScore(lives) {
   fill(255, 0, 255)
   textSize(25)
   text(" חיים", width - 80, 50)
-  text(lives, width - 110      , 50)
+  text(lives, width - 110, 50)
 }
 
 function gameLoop() {
-  
+
 
   if (random(1) < progress) {
     trains.push(new Train());
